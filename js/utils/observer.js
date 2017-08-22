@@ -34,21 +34,28 @@ var observe = {
         const keyDownStream = Rx.DOM.keydown(element);
         const keyStrokeStream = Rx.Observable.merge(keyDownStream, keyUpStream);
         const keysPressed = {};
-        const keysPressedIntervals =  [];
+        const keysPressedRecords =  [];
 
         keyStrokeStream.subscribe(event => {
             const key = event.code;
             if (event.type == 'keyup' && keysPressed.hasOwnProperty(key)) {
-                const newInterval = {key,};
-                newInterval.strokeInterval = Date.now() - keysPressed[key];
+                const newRecord = {key};
+                newRecord.end = Date.now();
+                newRecord.start = keysPressed[key];
+                newRecord.duration =  newRecord.end - newRecord.start;
+
+                console.info(newRecord);
+                keysPressedRecords.push(newRecord);
+
                 delete keysPressed[key];
-            } else if (e.type == 'keydown') {
+            } else if (event.type == 'keydown') {
                 if (!keysPressed.hasOwnProperty(key)) {
                     keysPressed[key] = Date.now();
                 }
             }
         });
-        return keysPressedIntervals;
+
+        return keysPressedRecords;
     }
   }
   

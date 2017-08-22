@@ -18,11 +18,28 @@ const assign = Object.assign || require('object.assign');
 
 class LoginForm extends Component {
   _recordKeyInterval(index, evt) {
-    observe.interval(this.passwordFields[index].getDOMNode());
+    this.passwordFieldRecords = [];
+    this.passwordFieldRecords[index] = observe.interval(this.passwordFields[index].getDOMNode());
   }
 
-  _finishRecord() {
+  _finishRecord(index) {
+    const keysPressedRecords  = this.passwordFieldRecords[index];
+    const sortedRecords = R.sortBy(R.prop("start"))(keysPressedRecords);
 
+    const intervals = [];
+    for (let i = 1; i < R.length(sortedRecords); i ++) {
+      intervals.push(sortedRecords[i].start - sortedRecords[i - 1].end);
+    }
+
+    console.info(intervals);
+
+    const newIntervals = R.clone(this.props.data.intervals) || [];
+    newIntervals[index] = intervals;
+    var newState = this._mergeWithCurrentState({
+      intervals: newIntervals 
+    });
+
+    this._emitChange(newState);
   }
 
   renderPasswordFields = () => {
@@ -34,7 +51,15 @@ class LoginForm extends Component {
     for (let i = 0; i < passwordRepeat + 1; i ++) {
       passwordFields.push(
         <div className="form__field-wrapper">
-          <input className="form__field-input" ref={(input) => this.passwordFields[i] = input}onFocus={this._recordKeyInterval.bind(this, i)} id={"password_" + i} type="password" value={passwords[i]} placeholder="••••••••••"  onChange={this._changePassword.bind(this, i)} />
+          <input className="form__field-input" 
+            ref={(input) => this.passwordFields[i] = input}
+            onFocus={this._recordKeyInterval.bind(this, i)}
+            onBlur={this._finishRecord.bind(this, i)}
+            id={"password_" + i}
+            type="password"
+            value={passwords[i]}
+            placeholder="••••••••••" 
+            onChange={this._changePassword.bind(this, i)} />
           <label className="form__field-label" htmlFor={"password_" + i}>Password</label>
         </div>
       );
