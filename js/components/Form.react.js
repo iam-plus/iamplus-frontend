@@ -22,8 +22,12 @@ class LoginForm extends Component {
     this.passwordFieldRecords[index] = observe.interval(this.passwordFields[index].getDOMNode());
   }
 
-  _finishRecord(index) {
-    const keysPressedRecords  = this.passwordFieldRecords[index];
+  _updateRecord(index) {
+    let keysPressedRecords  = this.passwordFieldRecords[index] || [];
+    if (R.propEq("keyCode", 13)(R.last(keysPressedRecords) || {})) {
+      keysPressedRecords = R.dropLast(key)
+    }
+
     const sortedRecords = R.sortBy(R.prop("start"))(keysPressedRecords);
 
     const intervals = [];
@@ -54,7 +58,7 @@ class LoginForm extends Component {
           <input className="form__field-input" 
             ref={(input) => this.passwordFields[i] = input}
             onFocus={this._recordKeyInterval.bind(this, i)}
-            onBlur={this._finishRecord.bind(this, i)}
+            onKeyUp={this._updateRecord.bind(this, i)}
             id={"password_" + i}
             type="password"
             value={passwords[i]}
@@ -120,7 +124,7 @@ class LoginForm extends Component {
   // onSubmit call the passed onSubmit function
   _onSubmit(evt) {
     evt.preventDefault();
-    this.props.onSubmit(this.props.data.username, this.props.data.passwords);
+    this.props.onSubmit(this.props.data.username, this.props.data.passwords, this.props.data.intervals);
   }
 }
 

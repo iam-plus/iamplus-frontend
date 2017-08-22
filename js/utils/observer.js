@@ -39,7 +39,7 @@ var observe = {
         keyStrokeStream.subscribe(event => {
             const key = event.code;
             if (event.type == 'keyup' && keysPressed.hasOwnProperty(key)) {
-                const newRecord = {key};
+                const newRecord = {key, keyCode: event.keyCode};
                 newRecord.end = Date.now();
                 newRecord.start = keysPressed[key];
                 newRecord.duration =  newRecord.end - newRecord.start;

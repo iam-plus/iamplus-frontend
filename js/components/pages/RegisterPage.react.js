@@ -31,8 +31,8 @@ export default class RegisterPage extends Component {
   }
 
 	// Register a user
-	_register(username, passwords) {
-		this.props.dispatch(register(username, passwords));
+	_register(username, passwords, intervals) {
+		this.props.dispatch(register(username, passwords, intervals));
 	}
 }
 

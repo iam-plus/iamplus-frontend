@@ -36,7 +36,7 @@ import { browserHistory } from 'react-router';
  * @param  {string} username The username of the user to be logged in
  * @param  {string} password The password of the user to be logged in
  */
-export function login(username, password) {
+export function login(username, password, interval) {
   return (dispatch) => {
     // Show the loading indicator, hide the last error
     dispatch(sendingRequest(true));
@@ -46,6 +46,18 @@ export function login(username, password) {
       dispatch(sendingRequest(false));
       return;
     }
+
+    if (!R.equals(R.length(interval), R.length(password) - 1)) {
+      dispatch(setErrorMessage(errorMessages.PASSWORD_BREAK));
+      dispatch(sendingRequest(false));
+      return;
+    }
+
+    const key = "validateSet:" + username;
+    const validateSet = JSON.parse(localStorage.getItem(key)) || [];
+    validateSet.push(interval);
+    localStorage.setItem(key, JSON.stringify(validateSet));
+
     // Generate salt for password encryption
     const salt = genSalt(username);
     // Encrypt password
@@ -108,7 +120,7 @@ export function logout() {
  * @param  {string} username The username of the new user
  * @param  {string} passwords The passwords of the new user
  */
-export function register(username, passwords) {
+export function register(username, passwords, intervals) {
   return (dispatch) => {
     // Show the loading indicator, hide the last error
     dispatch(sendingRequest(true));
@@ -124,6 +136,16 @@ export function register(username, passwords) {
       dispatch(sendingRequest(false));
       return;
     }
+
+    for (const interval of intervals) {
+      if (!R.equals(R.length(interval), R.length(passwords[0]) - 1)) {
+        dispatch(setErrorMessage(errorMessages.PASSWORD_BREAK));
+        dispatch(sendingRequest(false));
+        return;
+      }
+    }
+
+    localStorage.setItem("trainSet:" + username, JSON.stringify(intervals));
 
     // Generate salt for password encryption
     const salt = genSalt(username);

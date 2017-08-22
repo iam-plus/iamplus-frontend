@@ -7,7 +7,8 @@
  */
 export const FIELD_MISSING = 'Please fill out the entire form.';
 export const WRONG_PASSWORD = 'Wrong password.';
-export const PASSWORD_INCONSISTENT = "passwords are not same for 3 times."
+export const PASSWORD_INCONSISTENT = 'Passwords are not same for 3 times.';
+export const PASSWORD_BREAK = 'You must input the password in a time.';
 export const USER_NOT_FOUND = 'This username does not exist.';
 export const USERNAME_TAKEN = 'Sorry, but this username is already taken';
 export const GENERAL_ERROR = 'Something went wrong, please try again';
