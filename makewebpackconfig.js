@@ -10,6 +10,7 @@ module.exports = function(options) {
   if (options.prod) {
     // Entry
     entry = [
+      'babel-polyfill',
       path.resolve(__dirname, 'js/app.js') // Start with js/app.js...
     ];
     cssLoaders = ['file-loader?name=[path][name].[ext]', 'postcss-loader'];
@@ -47,6 +48,7 @@ module.exports = function(options) {
     entry = [
       "webpack-dev-server/client?http://localhost:3000", // Needed for hot reloading
       "webpack/hot/only-dev-server", // See above
+      'babel-polyfill',
       path.resolve(__dirname, 'js/app.js') // Start with js/app.js...
     ];
     cssLoaders = ['style-loader', 'css-loader', 'postcss-loader'];

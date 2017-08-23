@@ -23,6 +23,7 @@
  *    created in the second step
  */
 
+require('es6-promise').polyfill();
 import bcrypt from 'bcryptjs';
 import R from 'ramda';
 import { SET_AUTH, CHANGE_FORM, SENDING_REQUEST, SET_ERROR_MESSAGE } from '../constants/AppConstants';
@@ -30,7 +31,7 @@ import * as errorMessages  from '../constants/MessageConstants';
 import auth from '../utils/auth';
 import genSalt from '../utils/salt';
 import { browserHistory } from 'react-router';
-
+import fetch from 'isomorphic-fetch';
 /**
  * Logs an user in
  * @param  {string} username The username of the user to be logged in
@@ -69,7 +70,10 @@ export function login(username, password, interval) {
         return;
       }
       // Use auth.js to fake a request
-      auth.login(username, hash, (success, err) => {
+      auth.login(username, hash, async (success, err) => {
+        // const reponse = await fetch("http://www.baidu.com");
+        // console.info("reponse.status = " + reponse.status);
+
         // When the request is finished, hide the loading indicator
         dispatch(sendingRequest(false));
         dispatch(setAuthState(success));
@@ -160,7 +164,10 @@ export function register(username, passwords, intervals) {
         return;
       }
       // Use auth.js to fake a request
-      auth.register(username, hash, (success, err) => {
+      auth.register(username, hash, async (success, err) => {
+        // const reponse = await fetch("http://www.baidu.com")
+        // console.info("reponse.status = " + reponse.status);
+
         // When the request is finished, hide the loading indicator
         dispatch(sendingRequest(false));
         dispatch(setAuthState(success));
