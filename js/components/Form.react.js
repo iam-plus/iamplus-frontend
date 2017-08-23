@@ -18,15 +18,32 @@ const assign = Object.assign || require('object.assign');
 
 class LoginForm extends Component {
   _recordKeyInterval(index, evt) {
-    this.passwordFieldRecords = [];
-    this.passwordFieldRecords[index] = observe.interval(this.passwordFields[index].getDOMNode());
+    if (!this.passwordFieldRecords) {
+      this.passwordFieldRecords = [];
+    }
+    
+    if (!this.passwordFieldRecords[index]) {
+      this.passwordFieldRecords[index] = observe.interval(this.passwordFields[index].getDOMNode());
+    } else {
+      this.passwordFieldRecords[index].length = 0;
+    }
+  }
+
+  isPrintable(keycode) {
+    const valid = 
+        (keycode > 47 && keycode < 58)   || // number keys
+        keycode == 32 || keycode == 13   || // spacebar & return key(s) (if you want to allow carriage returns)
+        (keycode > 64 && keycode < 91)   || // letter keys
+        (keycode > 95 && keycode < 112)  || // numpad keys
+        (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
+        (keycode > 218 && keycode < 223);   // [\]' (in order)
+
+    return valid;
   }
 
   _updateRecord(index) {
     let keysPressedRecords  = this.passwordFieldRecords[index] || [];
-    if (R.propEq("keyCode", 13)(R.last(keysPressedRecords) || {})) {
-      keysPressedRecords = R.dropLast(keysPressedRecords)
-    }
+    keysPressedRecords = R.filter(x => this.isPrintable(x.keyCode), keysPressedRecords);
 
     const sortedRecords = R.sortBy(R.prop("start"))(keysPressedRecords);
 
@@ -103,6 +120,11 @@ class LoginForm extends Component {
   // Change the password in the app state
   _changePassword(i, evt) {
     const newPasswords = R.clone(this.props.data.passwords) || [];
+
+    if (R.length(evt.target.value) == 1) {
+      this.passwordFieldRecords[i].length = 0;
+    }
+
     newPasswords[i] = evt.target.value;
     var newState = this._mergeWithCurrentState({
       passwords: newPasswords
