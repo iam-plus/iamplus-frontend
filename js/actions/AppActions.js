@@ -56,6 +56,7 @@ export function login(username, password, interval) {
     const key = "validateSet:" + username;
     const validateSet = JSON.parse(localStorage.getItem(key)) || [];
     validateSet.push(interval);
+    localStorage.setItem("username", username);
     localStorage.setItem(key, JSON.stringify(validateSet));
 
     // Generate salt for password encryption
@@ -146,6 +147,7 @@ export function register(username, passwords, intervals) {
     }
 
     localStorage.setItem("trainSet:" + username, JSON.stringify(intervals));
+    localStorage.setItem("validateSet:" + username, JSON.stringify([]));
 
     // Generate salt for password encryption
     const salt = genSalt(username);

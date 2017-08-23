@@ -25,7 +25,7 @@ class LoginForm extends Component {
   _updateRecord(index) {
     let keysPressedRecords  = this.passwordFieldRecords[index] || [];
     if (R.propEq("keyCode", 13)(R.last(keysPressedRecords) || {})) {
-      keysPressedRecords = R.dropLast(key)
+      keysPressedRecords = R.dropLast(keysPressedRecords)
     }
 
     const sortedRecords = R.sortBy(R.prop("start"))(keysPressedRecords);
@@ -102,7 +102,7 @@ class LoginForm extends Component {
 
   // Change the password in the app state
   _changePassword(i, evt) {
-    const newPasswords = R.clone(this.props.data.passwords);
+    const newPasswords = R.clone(this.props.data.passwords) || [];
     newPasswords[i] = evt.target.value;
     var newState = this._mergeWithCurrentState({
       passwords: newPasswords

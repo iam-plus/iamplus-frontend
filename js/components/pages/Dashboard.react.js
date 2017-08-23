@@ -12,7 +12,16 @@ import { Bar as BarChart, Line as LineChart } from "react-chartjs";
 import R from 'ramda';
 
 class Dashboard extends Component {
+  getValidateSet() {
+    const username = localStorage.getItem("username");
+    const validateSet = localStorage.getItem("validateSet:" + username);
+
+    return JSON.parse(validateSet) || [];
+  }
+
   render() {
+    const validateSet = this.getValidateSet();
+
     const barChartData = {
       labels: R.range(1, 15),
       datasets: [{
@@ -26,18 +35,24 @@ class Dashboard extends Component {
       tooltipTemplate: "<%= value %>",
     }
 
+    const datasets = R.addIndex(R.map)((data, idx) => ({ label: idx, data }), validateSet || []);
+    if (R.isEmpty(datasets)) {
+      datasets.push({
+        label: "default",
+        data: [],
+      });
+    }
+
+    const xRayNum = R.length(validateSet[0]) || 10;
     const lineChartData = {
-      labels: R.range(1, 10),
-      datasets: [{
-        label: 'Dataset',
-        data: [20, 98, 60, 40, 50, -50, 20]
-      }]
+      labels: R.range(0, xRayNum),
+      datasets,
     };
 
     const detailChartOptions = {
       bezierCurve: false,
       datasetFill : false,
-      tooltipTemplate: "<%= value %>",
+      tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
     };
     
     return (
