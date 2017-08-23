@@ -147,6 +147,7 @@ export function register(username, passwords, intervals) {
     }
 
     localStorage.setItem("trainSet:" + username, JSON.stringify(intervals));
+    localStorage.setItem("username", username);
     localStorage.setItem("validateSet:" + username, JSON.stringify([]));
 
     // Generate salt for password encryption
