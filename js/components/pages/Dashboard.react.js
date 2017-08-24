@@ -21,26 +21,25 @@ class Dashboard extends Component {
 
   render() {
     const validateSet = this.getValidateSet();
-
-    const confidenSet = localStorage.getItem("rate:" + validateSet.username) || [];
+    const username = localStorage.getItem("username");
+    const confidenSet = JSON.parse(localStorage.getItem("rate:" + username)) || [];
+    const isValid = confidenSet[confidenSet.length - 1] > 50? true : false;
     const rangeSize = confidenSet.length > 15? confidenSet.length : 15;
-    let barDatasets = [];
-    // for (const value of confidenSet) {
-    //   barDatasets.push({
-    //     label: '',
-    //     fillColor: 'rgb(153, 50, 204)',
-    //     data: [value]
-    //   });
-    // }
+    let colorSet = [];
+    for (const value of confidenSet) {
+      if (value >= 50) {
+        colorSet.push('rgb(0, 123, 120)');
+      } else {
+        colorSet.push('rgb(255, 51, 0)');
+      }
+    }
     const barChartData = {
-      labels: R.range(0, 15),
+      labels: R.range(0, rangeSize),
       datasets: [{
-        label: "test 1",
-        backgroundColor: ['rgb(153, 50, 204)', 'rgb(255, 0, 0)', 'rgb(0, 255, 0)'],
-        data: [25, 30, 100]
+        label: "",
+        backgroundColor: colorSet,
+        data: confidenSet
       }]
-      // labels: R.range(1, rangeSize),
-      // datasets: barDatasets
     };
 
     const barChartOptions = {
@@ -71,9 +70,30 @@ class Dashboard extends Component {
         },
       fill : false,
     };
+
+    const validMessage = (function() {
+      if (isValid) {
+        return (
+          <p> 
+            <h2>This Login Attemp is VALID.</h2>
+          </p>
+        )
+      } else {
+        return (
+             <p>
+            <h2>This Login Attemp is INVALID.</h2>
+          </p>
+        )
+        
+      }
+    })()
+  
+    return (  
     
-    return (
     <div className="dashboard_content">
+      <div>
+        {validMessage} 
+      </div>
     <h2>Confidential</h2>
     <BarChart data={barChartData} options={barChartOptions} width="600" height="400" />
     <h2>Detail</h2>
