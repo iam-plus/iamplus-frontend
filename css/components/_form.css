@@ -9,7 +9,11 @@
 
 .form__password-wrapper {
   display: inline-block;
+}
+
+.form__password-wrapper > .form__field-input {
   width: 100%;
+  border-bottom: 1px solid #EDEDED;
 }
 
 .form__field-wrapper + .form__field-wrapper {
