@@ -36,7 +36,7 @@ class Dashboard extends Component {
     const barChartData = {
       labels: R.range(0, rangeSize),
       datasets: [{
-        label: "",
+        label: "Confidential",
         backgroundColor: colorSet,
         data: confidenSet
       }]
@@ -45,14 +45,23 @@ class Dashboard extends Component {
     const barChartOptions = {
       tooltip: {
         enabled: false,
+      },
+      legend: {
+        display: false,
       }
     }
 
-    const datasets = R.addIndex(R.map)((data, idx) => ({ label: idx, data }), validateSet || []);
+    const datasets = R.addIndex(R.map)((data, idx) => ({
+      borderColor: confidenSet[idx] > 50 ? "rgb(0, 123, 120)": 'rgb(255, 51, 0)',
+      pointBackgroundColor: confidenSet[idx] > 50 ? "rgb(0, 123, 120)": 'rgb(255, 51, 0)',
+      label: idx,
+      data,
+      fill: false }), validateSet || []);
     if (R.isEmpty(datasets)) {
       datasets.push({
         label: "default",
         data: [],
+        fill: false,
       });
     }
 
@@ -67,8 +76,10 @@ class Dashboard extends Component {
             line: {
                 tension: 0, // disables bezier curves
             }
-        },
-      fill : false,
+        }, 
+      legend: {
+        display: false,
+      }
     };
 
     const validMessage = (function() {
