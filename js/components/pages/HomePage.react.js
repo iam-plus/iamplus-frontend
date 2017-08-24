@@ -35,6 +35,7 @@ class HomePage extends Component {
 								<Link to="/register" className="btn btn--register">Register</Link>
 							</div>
 						)}
+						<img src="/img/Picture1.png" width="20%" style={{float: 'right'}}/>
 					</section>
 					<section className="text-section">
 						<h2>Features</h2>
