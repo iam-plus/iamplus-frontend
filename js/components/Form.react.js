@@ -108,7 +108,7 @@ class LoginForm extends Component {
           onFocus={this._recordKeyInterval.bind(this, i, false)}
           onKeyUp={this._updateRecord.bind(this, i)}
           id={"password_" + i}
-          type="text"
+          type={this.props.hidePassword? "password":"text"}
           value={passwords[i]}
           placeholder="" 
           onChange={this._changePassword.bind(this, i, false)} />
@@ -224,6 +224,7 @@ LoginForm.defaultProps = {
   passwordRepeat: 0,
   showNegativePasswordInputs: false,
   negativePasswordRepeat: 0,
+  hidePassword: false,
 }
 
 LoginForm.propTypes = {
@@ -233,6 +234,7 @@ LoginForm.propTypes = {
   passwordRepeat: React.PropTypes.number,
   showNegativePasswordInputs: React.PropTypes.bool,
   negativePasswordRepeat: React.PropTypes.number,
+  hidePassword: React.PropTypes.bool,
 }
 
 export default LoginForm;

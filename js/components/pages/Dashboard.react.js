@@ -86,13 +86,13 @@ class Dashboard extends Component {
       if (isValid) {
         return (
           <p> 
-            <h2>This Login Attemp is VALID.</h2>
+            <h2 style={{color: "rgb(0, 123, 120)",}}>This Login Attemp is VALID.</h2>
           </p>
         )
       } else {
         return (
              <p>
-            <h2>This Login Attemp is INVALID.</h2>
+            <h2  style={{color: 'rgb(255, 51, 0)'}}>This Login Attemp is INVALID.</h2>
           </p>
         )
         
@@ -105,7 +105,7 @@ class Dashboard extends Component {
       <div>
         {validMessage} 
       </div>
-    <h2>Confidential</h2>
+    <h2>Confidence Rate</h2>
     <BarChart data={barChartData} options={barChartOptions} width="600" height="400" />
     <h2>Detail</h2>
     <LineChart data={lineChartData} options={detailChartOptions} width="600" height="400" />
