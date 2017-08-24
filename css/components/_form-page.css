@@ -3,10 +3,12 @@
   margin: 0 auto;
   padding-top: 50px;
 	height: 100%;
+  width: 100%;
 }
 
 .form-page__form-wrapper {
   max-width: 325px;
+  margin: 0 auto;
   width: 100%;
   border: 1px solid $very-light-grey;
   border-radius: 3px;
