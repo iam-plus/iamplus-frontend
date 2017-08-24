@@ -36,7 +36,7 @@ class Dashboard extends Component {
     const barChartData = {
       labels: R.range(0, rangeSize),
       datasets: [{
-        label: "Confidential",
+        label: "Confident Rate",
         backgroundColor: colorSet,
         data: confidenSet
       }]
@@ -105,7 +105,7 @@ class Dashboard extends Component {
       <div>
         {validMessage} 
       </div>
-    <h2>Confidence Rate</h2>
+    <h2>Confident Rate</h2>
     <BarChart data={barChartData} options={barChartOptions} width="600" height="400" />
     <h2>Detail</h2>
     <LineChart data={lineChartData} options={detailChartOptions} width="600" height="400" />

@@ -58,12 +58,6 @@ export function login(username, password, interval) {
       return;
     }
 
-    const key = "validateSet:" + username;
-    const validateSet = JSON.parse(localStorage.getItem(key)) || [];
-    validateSet.push(interval);
-    localStorage.setItem("username", username);
-    localStorage.setItem(key, JSON.stringify(validateSet));
-
     // Generate salt for password encryption
     const salt = genSalt(username);
     // Encrypt password
@@ -76,50 +70,56 @@ export function login(username, password, interval) {
       // Use auth.js to fake a request
       
       auth.login(username, hash, async (success, err) => {
-        const reponse = fetch(`${baseUrl}/predict`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userName: username,
-            dataset: [ interval],
-          })
-        }).then(response => {
-          if (response.status >= 200 && response.status < 300) {
-            return response.json()
-          }
-        }).then(body => {
-          const rateArray = JSON.parse(localStorage.getItem("rate:" + username)) || [];
-          rateArray.push(parseInt(body.rate * 100) );
-          localStorage.setItem("rate:" + username, JSON.stringify(rateArray));
-          // When the request is finished, hide the loading indicator
-          dispatch(sendingRequest(false));
-          dispatch(setAuthState(success));
-          if (success === true) {
+        if (success === true) {
+          const reponse = fetch(`${baseUrl}/predict`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userName: username,
+              dataset: [ interval],
+            })
+          }).then(response => {
+            if (response.status >= 200 && response.status < 300) {
+              return response.json()
+            }
+          }).then(body => {
+            const rateArray = JSON.parse(localStorage.getItem("rate:" + username)) || [];
+            rateArray.push(parseInt(body.rate * 100) );
+            localStorage.setItem("rate:" + username, JSON.stringify(rateArray));
+            const key = "validateSet:" + username;
+            const validateSet = JSON.parse(localStorage.getItem(key)) || [];
+            validateSet.push(interval);
+            localStorage.setItem("username", username);
+            localStorage.setItem(key, JSON.stringify(validateSet));
+            // When the request is finished, hide the loading indicator
+            dispatch(sendingRequest(false));
+            dispatch(setAuthState(success));
+            
             // If the login worked, forward the user to the dashboard and clear the form
             forwardTo('/dashboard');
             dispatch(changeForm({
               username: "",
               password: ""
-            }));
-          } else {
-            switch (err.type) {
-              case 'user-doesnt-exist':
-                dispatch(setErrorMessage(errorMessages.USER_NOT_FOUND));
-                return;
-              case 'password-wrong':
-                dispatch(setErrorMessage(errorMessages.WRONG_PASSWORD));
-                return;
-              default:
-                dispatch(setErrorMessage(errorMessages.GENERAL_ERROR));
-                return;
-            }
-          }
+            }));    
         }).catch(e => {
           dispatch(sendingRequest(false));
           dispatch(setAuthState(false));
         });
+      } else {
+          switch (err.type) {
+            case 'user-doesnt-exist':
+              dispatch(setErrorMessage(errorMessages.USER_NOT_FOUND));
+              return;
+            case 'password-wrong':
+              dispatch(setErrorMessage(errorMessages.WRONG_PASSWORD));
+              return;
+            default:
+              dispatch(setErrorMessage(errorMessages.GENERAL_ERROR));
+              return;
+          }
+        }
       });
     });
   }
