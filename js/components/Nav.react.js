@@ -33,8 +33,9 @@ class Nav extends Component {
 
     return(
       <div className="nav">
+        <img src="/img/iam.png" height="50px"/>
         <div className="nav__wrapper">
-          <Link to="/" className="nav__logo-wrapper"><h1 className="nav__logo">Login&nbsp;Flow</h1></Link>
+          <Link to="/" className="nav__logo-wrapper"><h1 className="nav__logo">IAM+</h1></Link>
           { navButtons }
         </div>
       </div>
