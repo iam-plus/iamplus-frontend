@@ -30,6 +30,7 @@ class HomePage extends Component {
 							<Link to="/dashboard" className="btn btn--dash">Dashboard</Link>
 						) : (
 							<div>
+								
 								<Link to="/login" className="btn btn--login">Login</Link>
 								<Link to="/register" className="btn btn--register">Register</Link>
 							</div>

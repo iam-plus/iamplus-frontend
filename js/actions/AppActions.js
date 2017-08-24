@@ -37,6 +37,9 @@ import fetch from 'isomorphic-fetch';
  * @param  {string} username The username of the user to be logged in
  * @param  {string} password The password of the user to be logged in
  */
+
+const baseUrl = 'http://10.175.186.34:5000';
+
 export function login(username, password, interval) {
   return (dispatch) => {
     // Show the loading indicator, hide the last error
@@ -70,10 +73,23 @@ export function login(username, password, interval) {
         return;
       }
       // Use auth.js to fake a request
+      
       auth.login(username, hash, async (success, err) => {
-        // const reponse = await fetch("http://www.baidu.com");
+        const reponse = fetch(`${baseUrl}/predict`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userName: username,
+            dataset: [ interval],
+          })
+        });
         // console.info("reponse.status = " + reponse.status);
-
+        const body = reponse.json();
+        const rateArray = localStorage.getItem("rate:" + username) || [];
+        rateArray.push(body.rate);
+        localStorage.setItem("rate:" + username, rateArray);
         // When the request is finished, hide the loading indicator
         dispatch(sendingRequest(false));
         dispatch(setAuthState(success));
@@ -148,6 +164,8 @@ export function register({username, passwords, intervals, passwords1, intervals1
       return;
     }
 
+    
+
     for (const interval of intervals) {
       if (!R.equals(R.length(interval), R.length(passwords[0]) - 1)) {
         dispatch(setErrorMessage(errorMessages.PASSWORD_BREAK));
@@ -171,9 +189,20 @@ export function register({username, passwords, intervals, passwords1, intervals1
       }
       // Use auth.js to fake a request
       auth.register(username, hash, async (success, err) => {
-        // const reponse = await fetch("http://www.baidu.com")
+        const reponse = fetch(`${baseUrl}/train`, {
+          method: "POST",
+          timeout: 10*60*1000,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userName: username,
+            dataset: intervals,
+            dataset2: intervals1,
+          }),
+        });
         // console.info("reponse.status = " + reponse.status);
-
+       
         // When the request is finished, hide the loading indicator
         dispatch(sendingRequest(false));
         dispatch(setAuthState(success));
