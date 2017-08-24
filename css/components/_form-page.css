@@ -1,9 +1,8 @@
 .form-page__wrapper {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	display: block;
+  margin: 0 auto;
+  padding-top: 50px;
 	height: 100%;
-  width: 100%;
 }
 
 .form-page__form-wrapper {

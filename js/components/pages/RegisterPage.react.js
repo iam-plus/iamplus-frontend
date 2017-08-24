@@ -15,6 +15,9 @@ import LoadingIndicator from '../LoadingIndicator.react';
 export default class RegisterPage extends Component {
 	render() {
 		const dispatch = this.props.dispatch;
+		const {query = {}} = this.props.location;
+		const {showNegative = false} =  query;
+
 		const { formState, currentlySending } = this.props.data;
     return (
 			<div className="form-page__wrapper">
@@ -24,15 +27,15 @@ export default class RegisterPage extends Component {
 					</div>
 					{/* While the form is sending, show the loading indicator,
 						otherwise show "Register" on the submit button */}
-		    	<Form data={formState} dispatch={dispatch} passwordRepeat={2} location={location} history={this.props.history} onSubmit={::this._register} btnText={"Register"} currentlySending={currentlySending}/>
+		    	<Form data={formState} dispatch={dispatch} passwordRepeat={showNegative ? 5 : 2} negativePasswordRepeat={showNegative && 5} showNegativePasswordInputs={showNegative} location={location} history={this.props.history} onSubmit={::this._register} btnText={"Register"} currentlySending={currentlySending}/>
 				</div>
 			</div>
 		);
   }
 
 	// Register a user
-	_register(username, passwords, intervals) {
-		this.props.dispatch(register(username, passwords, intervals));
+	_register(formData) {
+		this.props.dispatch(register(formData));
 	}
 }
 

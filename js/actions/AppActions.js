@@ -125,8 +125,14 @@ export function logout() {
  * @param  {string} username The username of the new user
  * @param  {string} passwords The passwords of the new user
  */
-export function register(username, passwords, intervals) {
+export function register({username, passwords, intervals, passwords1, intervals1}) {
   return (dispatch) => {
+    console.info("username:", username)
+    console.info("passwords:", passwords)
+    console.info("passwords1:", passwords1)
+    console.info("intervals:", intervals)
+    console.info("intervals1:", intervals1)
+    
     // Show the loading indicator, hide the last error
     dispatch(sendingRequest(true));
     // If no username or password was specified, throw a field-missing error

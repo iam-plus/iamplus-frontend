@@ -31,7 +31,7 @@ export default class LoginPage extends Component {
 		);
   }
 
-	_login(username, passwords, intervals) {
+	_login({username, passwords, intervals}) {
 		this.props.dispatch(login(username, passwords[0], intervals[0]));
 	}
 }
