@@ -110,7 +110,7 @@ class LoginForm extends Component {
           id={"password_" + i}
           type="password"
           value={passwords[i]}
-          placeholder="••••••••••" 
+          placeholder="" 
           onChange={this._changePassword.bind(this, i, false)} />
       );
     }
@@ -131,7 +131,7 @@ class LoginForm extends Component {
           id={"ngetive_password_" + i}
           type="password"
           value={negativePasswordFields[i]}
-          placeholder="••••••••••" 
+          placeholder="" 
           onChange={this._changePassword.bind(this, i, true)} />
       );
     }

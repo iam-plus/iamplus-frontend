@@ -84,35 +84,41 @@ export function login(username, password, interval) {
             userName: username,
             dataset: [ interval],
           })
-        });
-        // console.info("reponse.status = " + reponse.status);
-        const body = reponse.json();
-        const rateArray = localStorage.getItem("rate:" + username) || [];
-        rateArray.push(body.rate);
-        localStorage.setItem("rate:" + username, rateArray);
-        // When the request is finished, hide the loading indicator
-        dispatch(sendingRequest(false));
-        dispatch(setAuthState(success));
-        if (success === true) {
-          // If the login worked, forward the user to the dashboard and clear the form
-          forwardTo('/dashboard');
-          dispatch(changeForm({
-            username: "",
-            password: ""
-          }));
-        } else {
-          switch (err.type) {
-            case 'user-doesnt-exist':
-              dispatch(setErrorMessage(errorMessages.USER_NOT_FOUND));
-              return;
-            case 'password-wrong':
-              dispatch(setErrorMessage(errorMessages.WRONG_PASSWORD));
-              return;
-            default:
-              dispatch(setErrorMessage(errorMessages.GENERAL_ERROR));
-              return;
+        }).then(response => {
+          if (response.status >= 200 && response.status < 300) {
+            return response.json
           }
-        }
+        }).then(body => {
+          const rateArray = localStorage.getItem("rate:" + username) || [];
+          rateArray.push(body.rate);
+          localStorage.setItem("rate:" + username, rateArray);
+          // When the request is finished, hide the loading indicator
+          dispatch(sendingRequest(false));
+          dispatch(setAuthState(success));
+          if (success === true) {
+            // If the login worked, forward the user to the dashboard and clear the form
+            forwardTo('/dashboard');
+            dispatch(changeForm({
+              username: "",
+              password: ""
+            }));
+          } else {
+            switch (err.type) {
+              case 'user-doesnt-exist':
+                dispatch(setErrorMessage(errorMessages.USER_NOT_FOUND));
+                return;
+              case 'password-wrong':
+                dispatch(setErrorMessage(errorMessages.WRONG_PASSWORD));
+                return;
+              default:
+                dispatch(setErrorMessage(errorMessages.GENERAL_ERROR));
+                return;
+            }
+          }
+        }).catch(e => {
+          dispatch(sendingRequest(false));
+          dispatch(setAuthState(false));
+        });
       });
     });
   }
@@ -164,8 +170,6 @@ export function register({username, passwords, intervals, passwords1, intervals1
       return;
     }
 
-    
-
     for (const interval of intervals) {
       if (!R.equals(R.length(interval), R.length(passwords[0]) - 1)) {
         dispatch(setErrorMessage(errorMessages.PASSWORD_BREAK));
@@ -188,10 +192,9 @@ export function register({username, passwords, intervals, passwords1, intervals1
         return;
       }
       // Use auth.js to fake a request
-      auth.register(username, hash, async (success, err) => {
+      auth.register(username, hash, (success, err) => {
         const reponse = fetch(`${baseUrl}/train`, {
           method: "POST",
-          timeout: 10*60*1000,
           headers: {
             "Content-Type": "application/json",
           },
@@ -200,29 +203,31 @@ export function register({username, passwords, intervals, passwords1, intervals1
             dataset: intervals,
             dataset2: intervals1,
           }),
-        });
-        // console.info("reponse.status = " + reponse.status);
-       
-        // When the request is finished, hide the loading indicator
-        dispatch(sendingRequest(false));
-        dispatch(setAuthState(success));
-        if (success) {
-          // If the register worked, forward the user to the homepage and clear the form
-          forwardTo('/dashboard');
-          dispatch(changeForm({
-            username: "",
-            passwords: [],
-          }));
-        } else {
-          switch (err.type) {
-            case 'username-exists':
-              dispatch(setErrorMessage(errorMessages.USERNAME_TAKEN));
-              return;
-            default:
-              dispatch(setErrorMessage(errorMessages.GENERAL_ERROR));
-              return;
+        }).then(response => {
+                  // When the request is finished, hide the loading indicator
+          dispatch(sendingRequest(false));
+          dispatch(setAuthState(success));
+          if (success) {
+            // If the register worked, forward the user to the homepage and clear the form
+            forwardTo('/dashboard');
+            dispatch(changeForm({
+              username: "",
+              passwords: [],
+            }));
+          } else {
+            switch (err.type) {
+              case 'username-exists':
+                dispatch(setErrorMessage(errorMessages.USERNAME_TAKEN));
+                return;
+              default:
+                dispatch(setErrorMessage(errorMessages.GENERAL_ERROR));
+                return;
+            }
           }
-        }
+        }).catch(e => {
+          dispatch(sendingRequest(false));
+          dispatch(setAuthState(false));
+        });       
       });
     });
   }
