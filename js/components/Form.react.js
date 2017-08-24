@@ -108,7 +108,7 @@ class LoginForm extends Component {
           onFocus={this._recordKeyInterval.bind(this, i, false)}
           onKeyUp={this._updateRecord.bind(this, i)}
           id={"password_" + i}
-          type="password"
+          type="text"
           value={passwords[i]}
           placeholder="" 
           onChange={this._changePassword.bind(this, i, false)} />
@@ -129,7 +129,7 @@ class LoginForm extends Component {
           onFocus={this._recordKeyInterval.bind(this, i, true)}
           onKeyUp={this._updateRecordNegative.bind(this, i)}
           id={"ngetive_password_" + i}
-          type="password"
+          type="text"
           value={negativePasswordFields[i]}
           placeholder="" 
           onChange={this._changePassword.bind(this, i, true)} />

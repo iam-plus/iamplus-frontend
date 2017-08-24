@@ -32,6 +32,7 @@ import auth from '../utils/auth';
 import genSalt from '../utils/salt';
 import { browserHistory } from 'react-router';
 import fetch from 'isomorphic-fetch';
+
 /**
  * Logs an user in
  * @param  {string} username The username of the user to be logged in
@@ -147,7 +148,7 @@ export function logout() {
  * @param  {string} username The username of the new user
  * @param  {string} passwords The passwords of the new user
  */
-export function register({username, passwords, intervals, passwords1, intervals1}) {
+export function register({username, passwords = [], intervals = [], passwords1 = [], intervals1 = []}) {
   return (dispatch) => {
     console.info("username:", username)
     console.info("passwords:", passwords)
@@ -157,20 +158,23 @@ export function register({username, passwords, intervals, passwords1, intervals1
     
     // Show the loading indicator, hide the last error
     dispatch(sendingRequest(true));
+    const allPasswords = R.concat(passwords, passwords1);
+    const allIntervals = R.concat(intervals, intervals1);
+
     // If no username or password was specified, throw a field-missing error
-    if (R.length(passwords) < 3 && anyElementsEmpty({username, passwords})) {
+    if (R.length(passwords) < 3 && anyElementsEmpty({username, passwords: allPasswords })) {
       dispatch(setErrorMessage(errorMessages.FIELD_MISSING));
       dispatch(sendingRequest(false));
       return;
     }
 
-    if (!R.equals(passwords[0], passwords[1]) || !R.equals(passwords[0], passwords[2])) {
+    if (R.length(R.uniq(allPasswords)) > 1) {
       dispatch(setErrorMessage(errorMessages.PASSWORD_INCONSISTENT));
       dispatch(sendingRequest(false));
       return;
     }
 
-    for (const interval of intervals) {
+    for (const interval of allIntervals) {
       if (!R.equals(R.length(interval), R.length(passwords[0]) - 1)) {
         dispatch(setErrorMessage(errorMessages.PASSWORD_BREAK));
         dispatch(sendingRequest(false));
