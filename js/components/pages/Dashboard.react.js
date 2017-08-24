@@ -15,20 +15,26 @@ class Dashboard extends Component {
   getValidateSet() {
     const username = localStorage.getItem("username");
     const validateSet = localStorage.getItem("validateSet:" + username);
-
+  
     return JSON.parse(validateSet) || [];
   }
 
   render() {
     const validateSet = this.getValidateSet();
 
+    const confidenSet = localStorage.getItem("rate:" + validateSet.username) || [];
+    const rangeSize = confidenSet.length > 15? confidenSet.length : 15;
+    let barDatasets = [];
+    // for (const value of confidenSet) {
+    //   barDatasets.push({
+    //     label: '',
+    //     fillColor: 'rgb(153, 50, 204)',
+    //     data: [value]
+    //   });
+    // }
     const barChartData = {
-      labels: R.range(1, 15),
-      datasets: [{
-        label: 'Dataset',
-        fillColor: 'rgb(153, 50, 204)',
-        data: [20, 98, 60]
-      }]
+      labels: R.range(1, rangeSize),
+      datasets: barDatasets
     };
 
     const barChartOptions = {

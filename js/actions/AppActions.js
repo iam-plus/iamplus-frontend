@@ -87,12 +87,12 @@ export function login(username, password, interval) {
           })
         }).then(response => {
           if (response.status >= 200 && response.status < 300) {
-            return response.json
+            return response.json()
           }
         }).then(body => {
-          const rateArray = localStorage.getItem("rate:" + username) || [];
-          rateArray.push(body.rate);
-          localStorage.setItem("rate:" + username, rateArray);
+          const rateArray = JSON.parse(localStorage.getItem("rate:" + username)) || [];
+          rateArray.push(parseInt(body.rate * 100) );
+          localStorage.setItem("rate:" + username, JSON.stringify(rateArray));
           // When the request is finished, hide the loading indicator
           dispatch(sendingRequest(false));
           dispatch(setAuthState(success));
