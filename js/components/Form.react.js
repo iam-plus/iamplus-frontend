@@ -17,6 +17,10 @@ import R from 'ramda';
 const assign = Object.assign || require('object.assign');
 
 class LoginForm extends Component {
+
+  /**
+    * start to record click interval when focus.
+    */
   _recordKeyInterval(index, isNegative, evt) {
     if (!this.passwordFieldRecords) {
       this.passwordFieldRecords = [];
@@ -53,6 +57,9 @@ class LoginForm extends Component {
     return valid;
   }
 
+  /**
+    * add an new records to redux.
+    */
   _updateRecord(index) {
     let keysPressedRecords  = this.passwordFieldRecords[index] || [];
     keysPressedRecords = R.filter(x => this.isPrintable(x.keyCode), keysPressedRecords);
@@ -75,6 +82,7 @@ class LoginForm extends Component {
     this._emitChange(newState);
   }
 
+  // this message is almost same with _updateRecord.
   _updateRecordNegative(index) {
     let keysPressedRecords  = this.negativePasswordFieldRecords[index] || [];
     keysPressedRecords = R.filter(x => this.isPrintable(x.keyCode), keysPressedRecords);
@@ -90,6 +98,8 @@ class LoginForm extends Component {
 
     const newIntervals = R.clone(this.props.data.intervals1) || [];
     newIntervals[index] = intervals;
+
+    //intervals store the negative intervals sample.
     var newState = this._mergeWithCurrentState({
       intervals1: newIntervals 
     });
