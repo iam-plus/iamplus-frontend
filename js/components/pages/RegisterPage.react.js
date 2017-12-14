@@ -16,10 +16,12 @@ export default class RegisterPage extends Component {
 	render() {
 		const dispatch = this.props.dispatch;
 		const {query = {}} = this.props.location;
+
+		// showNegative is default false, add ?showNegative=true to url when need to show negative inputs during registering.
 		const {showNegative = false} =  query;
 
 		const { formState, currentlySending } = this.props.data;
-    return (
+   		return (
 			<div className="form-page__wrapper">
 				<div className="form-page__form-wrapper">
 					<div className="form-page__form-header">

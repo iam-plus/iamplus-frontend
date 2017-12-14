@@ -68,7 +68,7 @@ export function login(username, password, interval) {
         return;
       }
       // Use auth.js to fake a request
-      
+      // validate inputs and store validate result to localStorage. 
       auth.login(username, hash, async (success, err) => {
         if (success === true) {
           const reponse = fetch(`${baseUrl}/predict`, {
@@ -196,6 +196,7 @@ export function register({username, passwords = [], intervals = [], passwords1 =
         return;
       }
       // Use auth.js to fake a request
+      // train model when register
       auth.register(username, hash, (success, err) => {
         const reponse = fetch(`${baseUrl}/train`, {
           method: "POST",
