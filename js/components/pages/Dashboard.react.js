@@ -33,6 +33,7 @@ class Dashboard extends Component {
         colorSet.push('rgb(255, 51, 0)');
       }
     }
+
     const barChartData = {
       labels: R.range(0, rangeSize),
       datasets: [{
@@ -51,6 +52,8 @@ class Dashboard extends Component {
       }
     }
 
+
+    // map validate set to datasets of react-chart2
     const datasets = R.addIndex(R.map)((data, idx) => ({
       borderColor: confidenSet[idx] > 50 ? "rgb(0, 123, 120)": 'rgb(255, 51, 0)',
       pointBackgroundColor: confidenSet[idx] > 50 ? "rgb(0, 123, 120)": 'rgb(255, 51, 0)',
